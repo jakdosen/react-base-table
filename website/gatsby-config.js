@@ -7,6 +7,8 @@ module.exports = {
     author: 'Neo Nie (nihgwu@live.com)',
   },
   plugins: [
+    '@bumped-inc/gatsby-plugin-optional-chaining',
+    'gatsby-plugin-nullish-coalescing-operator',
     {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
