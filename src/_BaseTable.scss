@@ -44,7 +44,7 @@ $table-prefix: BaseTable !default;
   $row-hovered-background-color: #f3f3f3 !default;
   $header-cell-hovered-background-color: #f3f3f3 !default;
   $sort-indicator-hovered-color: #888888 !default;
-  $column-resizer-color: #cccccc !default;
+  $column-resizer-color: #00cccc !default;
 
   $show-frozen-rows-shadow: false !default;
   $show-frozen-columns-shadow: true !default;
@@ -62,7 +62,7 @@ $table-prefix: BaseTable !default;
 
   &--dynamic {
     .#{$table-prefix}__row {
-      overflow: hidden;
+      //overflow: hidden;
       align-items: stretch;
     }
   }
@@ -102,50 +102,6 @@ $table-prefix: BaseTable !default;
         background-color: $header-background-color;
       }
     }
-
-    &-frozen-left,
-    &-frozen-right {
-      .#{$table-prefix}__header,
-      .#{$table-prefix}__body {
-        overflow: hidden !important;
-      }
-    }
-
-    &-frozen-left {
-      @include table-edge-padding($table-padding-left, null);
-      @if ($show-frozen-columns-shadow) {
-        box-shadow: $box-shadow-offset 0 $box-shadow-blur 0 $box-shadow-color;
-      }
-      top: 0;
-      left: 0;
-
-      .#{$table-prefix}__header-row,
-      .#{$table-prefix}__row {
-        padding-right: 0 !important;
-      }
-
-      .#{$table-prefix}__body {
-        overflow-y: auto !important;
-      }
-    }
-
-    &-frozen-right {
-      @include table-edge-padding(null, $table-padding-right);
-      @if ($show-frozen-columns-shadow) {
-        box-shadow: -$box-shadow-offset 0 $box-shadow-blur 0 $box-shadow-color;
-      }
-      top: 0;
-      right: 0;
-
-      .#{$table-prefix}__header-row,
-      .#{$table-prefix}__row {
-        padding-left: 0 !important;
-      }
-
-      .#{$table-prefix}__body {
-        overflow-y: auto !important;
-      }
-    }
   }
 
   &__header {
@@ -168,6 +124,10 @@ $table-prefix: BaseTable !default;
   &__header-row {
     background-color: $header-background-color;
     font-weight: $header-font-weight;
+    .#{$table-prefix}__header-cell--frozen-left,
+    .#{$table-prefix}__header-cell--frozen-right {
+      background-color: $header-background-color;
+    }
   }
 
   &__row {
@@ -176,6 +136,10 @@ $table-prefix: BaseTable !default;
     &:hover,
     &--hovered {
       background-color: $row-hovered-background-color;
+      .#{$table-prefix}__row-cell--frozen-left,
+      .#{$table-prefix}__row-cell--frozen-right {
+        background-color: $row-hovered-background-color;
+      }
     }
   }
 
@@ -191,7 +155,9 @@ $table-prefix: BaseTable !default;
     align-items: center;
     padding: 0 $column-padding;
     box-sizing: border-box;
-
+    .#{$table-prefix}__bordered & {
+      border-right: $border;
+    }
     &--align-center {
       justify-content: center;
       text-align: center;
@@ -201,22 +167,52 @@ $table-prefix: BaseTable !default;
       justify-content: flex-end;
       text-align: right;
     }
+
+    //frozen cell
+    &--frozen-left,
+    &--frozen-right {
+      position: sticky !important;
+      z-index: 2;
+      background: #fff;
+      &--first:after,
+      &--last:after {
+        position: absolute;
+        top: 0;
+        bottom: -1px;
+        width: 30px;
+        transition: box-shadow 0.3s;
+        content: '';
+        pointer-events: none;
+      }
+    }
+
+    &--frozen-left--last:after {
+      box-shadow: inset 10px 0 8px -8px rgba(0, 0, 0, 0.15);
+      right: 0;
+      transform: translateX(100%);
+    }
+
+    &--frozen-right--first:after {
+      left: 0;
+      transform: translateX(-100%);
+      box-shadow: inset -10px 0 8px -8px rgba(0, 0, 0, 0.15);
+    }
   }
 
   &__header-cell {
     position: relative;
     cursor: default;
 
-    &:hover {
-      .#{$table-prefix}__column-resizer {
-        visibility: visible;
-        opacity: 0.5;
-
-        &:hover {
-          opacity: 1;
-        }
-      }
-    }
+    //&:hover {
+    //  .#{$table-prefix}__column-resizer {
+    //    visibility: visible;
+    //    opacity: 0.5;
+    //
+    //    &:hover {
+    //      opacity: 1;
+    //    }
+    //  }
+    //}
 
     .#{$table-prefix}__sort-indicator {
       display: none;
@@ -251,6 +247,7 @@ $table-prefix: BaseTable !default;
         opacity: 1;
         // workaround to prevent header being clicked when resizing stopped on header
         &::after {
+          transition: all 0.2s;
           @include fill-layout();
           content: '';
           left: -9999px;
@@ -267,7 +264,7 @@ $table-prefix: BaseTable !default;
 
   &__header-row--resizing {
     .#{$table-prefix}__header-cell {
-      background-color: transparent;
+      //background-color: transparent;
       cursor: col-resize;
 
       &:not(.#{$table-prefix}__header-cell--sorting) {
@@ -286,11 +283,10 @@ $table-prefix: BaseTable !default;
 
   &__column-resizer {
     width: 3px;
-    visibility: hidden;
     background-color: $column-resizer-color;
-
+    transition: all 0.3s;
+    opacity: 0;
     &:hover {
-      visibility: visible;
       opacity: 1;
     }
   }
@@ -307,6 +303,7 @@ $table-prefix: BaseTable !default;
     background-color: $column-resizer-color;
     width: 3px;
     transform: translateX(-100%);
+    z-index: 10;
   }
 
   &__empty-layer {

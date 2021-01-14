@@ -27,7 +27,7 @@ class TableHeader extends React.PureComponent {
     const style = { width: '100%', height: rowHeight };
     // for frozen row the `rowIndex` is negative
     const rowIndex = -index - 1;
-    return rowRenderer({ style, columns, rowData, rowIndex });
+    return rowRenderer({ style, columns, rowData, rowIndex }, true);
   }
 
   render() {

@@ -13,7 +13,7 @@ export default class ColumnManager {
   }
 
   reset(columns, fixed) {
-    this._columns = columns.map(column => {
+    this._columns = columns.map((column, index) => {
       let width = column.width;
       if (column.resizable) {
         // don't reset column's `width` if `width` prop doesn't change
@@ -22,7 +22,7 @@ export default class ColumnManager {
           width = this._columns[idx].width;
         }
       }
-      return { ...column, width };
+      return { ...column, width, index };
     });
     this._origColumns = columns;
     this._fixed = fixed;
@@ -138,6 +138,9 @@ export default class ColumnManager {
     column.width = width;
     this._cached = {};
     this._columnStyles[column.key] = this.recomputeColumnStyle(column);
+    if(column.frozen === FrozenDirection.LEFT){
+
+    }
   }
 
   getColumnStyle(key) {
@@ -151,6 +154,8 @@ export default class ColumnManager {
   recomputeColumnStyle(column) {
     let flexGrow = 0;
     let flexShrink = 0;
+    const { index, frozen } = column;
+    const columns = this._columns;
     if (!this._fixed) {
       flexGrow = typeof column.flexGrow === 'number' ? column.flexGrow : 0;
       flexShrink = typeof column.flexShrink === 'number' ? column.flexShrink : 1;
@@ -174,6 +179,16 @@ export default class ColumnManager {
       style.minWidth = column.minWidth;
     }
 
+    if (!!~[FrozenDirection.LEFT, FrozenDirection.RIGHT].indexOf(frozen)) {
+      style.position = 'sticky';
+      style.overflow = 'visible';
+      if (frozen === FrozenDirection.LEFT) {
+        style.left = columns.slice(0, index).reduce((left, col) => left + col?.width ?? 0, 0);
+      }
+      if (frozen === FrozenDirection.RIGHT) {
+        style.right = columns.slice(index + 1).reduce((right, col) => right + col?.width ?? 0, 0);
+      }
+    }
     return style;
   }
 
