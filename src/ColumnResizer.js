@@ -76,7 +76,7 @@ class ColumnResizer extends React.PureComponent {
     this._handleDrag = this._handleDrag.bind(this);
   }
 
-  componentWillUnmount() {
+  UNSAFE_componentWillMount() {
     if (this.handleRef) {
       const { ownerDocument } = this.handleRef;
       ownerDocument.removeEventListener(eventsFor.mouse.move, this._handleDrag);
@@ -171,7 +171,7 @@ class ColumnResizer extends React.PureComponent {
     let clientX = e.clientX;
     if (e.type === eventsFor.touch.move) {
       e.preventDefault();
-      if (e.targetTouches && e.targetTouches[0]) clientX = e.targetTouches[0].clientX;
+      if (e?.targetTouches?.[0]) clientX = e?.targetTouches?.[0]?.clientX;
     }
 
     const { offsetParent } = this.handleRef;

@@ -41,6 +41,7 @@ class TableRow extends React.PureComponent {
       isScrolling,
       className,
       style,
+      isFrozen,
       columns,
       rowIndex,
       rowData,
@@ -66,6 +67,7 @@ class TableRow extends React.PureComponent {
     let cells = columns.map((column, columnIndex) =>
       cellRenderer({
         isScrolling,
+        isFrozen,
         columns,
         column,
         columnIndex,
@@ -171,6 +173,7 @@ TableRow.defaultProps = {
 
 TableRow.propTypes = {
   isScrolling: PropTypes.bool,
+  isFrozen: PropTypes.bool,
   className: PropTypes.string,
   style: PropTypes.object,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,

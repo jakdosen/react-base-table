@@ -1,6 +1,6 @@
 const columns = generateColumns(10, undefined, { resizable: true })
 const data = generateData(columns, 200)
-
+columns[0].frozen = 'left'
 const colSpanIndex = 1
 columns[colSpanIndex].colSpan = ({ rowData, rowIndex }) => (rowIndex % 4) + 1
 columns[colSpanIndex].align = Column.Alignment.CENTER
@@ -33,7 +33,7 @@ const rowRenderer = ({ rowData, rowIndex, cells, columns }) => {
       backgroundColor: 'darkgray',
       height: rowSpan * 50 - 1,
       alignSelf: 'flex-start',
-      zIndex: 1,
+      zIndex: 3,
     }
     cells[rowSpanIndex] = React.cloneElement(cell, { style })
   }

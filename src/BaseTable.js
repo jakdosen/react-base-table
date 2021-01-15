@@ -327,7 +327,7 @@ class BaseTable extends React.PureComponent {
     return <ExpandIcon depth={depth} expandable={expandable} expanded={expanded} {...extraProps} onExpand={onExpand} />;
   }
 
-  renderRow({ isScrolling, columns, rowData, rowIndex, style }) {
+  renderRow({ isScrolling, columns, rowData, rowIndex, style }, isFrozen) {
     const { rowClassName, rowRenderer, rowEventHandlers, expandColumnKey, estimatedRowHeight } = this.props;
 
     const rowClass = callOrReturn(rowClassName, { columns, rowData, rowIndex });
@@ -342,12 +342,11 @@ class BaseTable extends React.PureComponent {
       [this._prefixClass('row--frozen')]: depth === 0 && rowIndex < 0,
       [this._prefixClass('row--customized')]: rowRenderer,
     });
-
-    const hasFrozenColumns = this.columnManager.hasFrozenColumns();
     const rowProps = {
       ...extraProps,
       role: 'row',
       key: `row-${rowKey}`,
+      'data-row-key': rowKey,
       isScrolling,
       className,
       style,
@@ -359,6 +358,7 @@ class BaseTable extends React.PureComponent {
       depth,
       rowEventHandlers,
       rowRenderer,
+      isFrozen,
       // for frozen rows we use fixed rowHeight
       estimatedRowHeight: rowIndex >= 0 ? estimatedRowHeight : undefined,
       getIsResetting: this._getIsResetting,
@@ -366,25 +366,15 @@ class BaseTable extends React.PureComponent {
       expandIconRenderer: this.renderExpandIcon,
       onRowExpand: this._handleRowExpand,
       // for fixed table, we need to sync the hover state across the inner tables
-      onRowHover: hasFrozenColumns ? this._handleRowHover : null,
-      onRowHeightChange: hasFrozenColumns ? this._handleFrozenRowHeightChange : this._handleRowHeightChange,
+      onRowHover: null,
+      onRowHeightChange: this._handleRowHeightChange,
     };
 
     return <TableRow {...rowProps} />;
   }
 
-  renderRowCell({ isScrolling, columns, column, columnIndex, rowData, rowIndex, expandIcon }) {
-    if (column[ColumnManager.PlaceholderKey]) {
-      return (
-        <div
-          key={`row-${rowData[this.props.rowKey]}-cell-${column.key}-placeholder`}
-          className={this._prefixClass('row-cell-placeholder')}
-          style={this.columnManager.getColumnStyle(column.key)}
-        />
-      );
-    }
-
-    const { className, dataKey, dataGetter, cellRenderer } = column;
+  renderRowCell({ isScrolling, columns, column, columnIndex, rowData, rowIndex, expandIcon, isFrozen }) {
+    const { className, dataKey, dataGetter, cellRenderer, align, frozen, index } = column;
     const TableCell = this._getComponent('TableCell');
 
     const cellData = dataGetter
@@ -395,20 +385,44 @@ class BaseTable extends React.PureComponent {
 
     const cellCls = callOrReturn(className, { cellData, columns, column, columnIndex, rowData, rowIndex });
     const cls = cn(this._prefixClass('row-cell'), cellCls, {
-      [this._prefixClass('row-cell--align-center')]: column.align === Alignment.CENTER,
-      [this._prefixClass('row-cell--align-right')]: column.align === Alignment.RIGHT,
+      [this._prefixClass('row-cell--align-center')]: align === Alignment.CENTER,
+      [this._prefixClass('row-cell--align-right')]: align === Alignment.RIGHT,
+      [this._prefixClass('row-cell--frozen-left')]: frozen === FrozenDirection.LEFT,
+      [this._prefixClass('row-cell--frozen-left--last')]:
+        frozen === FrozenDirection.LEFT && index === this.columnManager.getLeftFrozenColumns().length - 1,
+      [this._prefixClass('row-cell--frozen-right')]: frozen === FrozenDirection.RIGHT,
+      [this._prefixClass('row-cell--frozen-right--first')]:
+        frozen === FrozenDirection.RIGHT && index === this.columnManager.getRightFrozenColumns()?.[0]?.index,
     });
 
     const extraProps = callOrReturn(this.props.cellProps, { columns, column, columnIndex, rowData, rowIndex });
     const { tagName, ...rest } = extraProps || {};
     const Tag = tagName || 'div';
+
+    const styleObject = { ...(this.columnManager.getColumnStyle(column.key) ?? {}) };
+    const scrollbarWidth = this._verticalScrollbarSize;
+
+    //Consider the width of last column should be include scrollbar size
+    if (frozen === FrozenDirection.RIGHT && isFrozen) {
+      if (
+        index ===
+        this.columnManager
+          .getRightFrozenColumns()
+          .slice(-1)
+          .pop()?.index
+      ) {
+        styleObject.width += scrollbarWidth;
+      } else {
+        styleObject.right += scrollbarWidth;
+      }
+    }
     return (
       <Tag
         role="gridcell"
         key={`row-${rowData[this.props.rowKey]}-cell-${column.key}`}
         {...rest}
         className={cls}
-        style={this.columnManager.getColumnStyle(column.key)}
+        style={styleObject}
       >
         {expandIcon}
         {cell}
@@ -445,7 +459,7 @@ class BaseTable extends React.PureComponent {
   }
 
   renderHeaderCell({ columns, column, columnIndex, headerIndex, expandIcon }) {
-    if (column[ColumnManager.PlaceholderKey]) {
+    /*if (column[ColumnManager.PlaceholderKey]) {
       return (
         <div
           key={`header-${headerIndex}-cell-${column.key}-placeholder`}
@@ -453,13 +467,12 @@ class BaseTable extends React.PureComponent {
           style={this.columnManager.getColumnStyle(column.key)}
         />
       );
-    }
+    }*/
 
-    const { headerClassName, headerRenderer } = column;
+    const { headerClassName, headerRenderer, frozen, align, sortable, index } = column;
     const { sortBy, sortState, headerCellProps } = this.props;
     const TableHeaderCell = this._getComponent('TableHeaderCell');
     const SortIndicator = this._getComponent('SortIndicator');
-
     const cellProps = { columns, column, columnIndex, headerIndex, container: this };
     const cell = renderElement(
       headerRenderer || <TableHeaderCell className={this._prefixClass('header-cell-text')} />,
@@ -476,18 +489,35 @@ class BaseTable extends React.PureComponent {
       sorting = column.key === sortBy.key;
       sortOrder = sorting ? sortBy.order : SortOrder.ASC;
     }
-
+    const rightFrozenColumns = this.columnManager.getRightFrozenColumns().slice();
     const cellCls = callOrReturn(headerClassName, { columns, column, columnIndex, headerIndex });
     const cls = cn(this._prefixClass('header-cell'), cellCls, {
-      [this._prefixClass('header-cell--align-center')]: column.align === Alignment.CENTER,
-      [this._prefixClass('header-cell--align-right')]: column.align === Alignment.RIGHT,
-      [this._prefixClass('header-cell--sortable')]: column.sortable,
+      [this._prefixClass('header-cell--align-center')]: align === Alignment.CENTER,
+      [this._prefixClass('header-cell--align-right')]: align === Alignment.RIGHT,
+      [this._prefixClass('header-cell--sortable')]: sortable,
       [this._prefixClass('header-cell--sorting')]: sorting,
       [this._prefixClass('header-cell--resizing')]: column.key === this.state.resizingKey,
+      [this._prefixClass('header-cell--frozen-left')]: frozen === FrozenDirection.LEFT,
+      [this._prefixClass('header-cell--frozen-left--last')]:
+        frozen === FrozenDirection.LEFT && index === this.columnManager.getLeftFrozenColumns().length - 1,
+      [this._prefixClass('header-cell--frozen-right')]: frozen === FrozenDirection.RIGHT,
+      [this._prefixClass('header-cell--frozen-right--first')]:
+        frozen === FrozenDirection.RIGHT && index === rightFrozenColumns?.[0]?.index,
     });
     const extraProps = callOrReturn(headerCellProps, { columns, column, columnIndex, headerIndex });
     const { tagName, ...rest } = extraProps || {};
     const Tag = tagName || 'div';
+    const styleObject = { ...(this.columnManager.getColumnStyle(column.key) ?? {}) };
+    const scrollbarWidth = this._verticalScrollbarSize;
+
+    //Consider the width of last column should be include scrollbar size
+    if (frozen === FrozenDirection.RIGHT) {
+      if (index === rightFrozenColumns.slice(-1).pop()?.index) {
+        styleObject.width += scrollbarWidth;
+      } else {
+        styleObject.right += scrollbarWidth;
+      }
+    }
     return (
       <Tag
         role="gridcell"
@@ -495,7 +525,7 @@ class BaseTable extends React.PureComponent {
         onClick={column.sortable ? this._handleColumnSort : null}
         {...rest}
         className={cls}
-        style={this.columnManager.getColumnStyle(column.key)}
+        style={styleObject}
         data-key={column.key}
       >
         {expandIcon}
@@ -657,7 +687,7 @@ class BaseTable extends React.PureComponent {
     if (footerHeight === 0) return null;
     return (
       <div className={this._prefixClass('footer')} style={{ height: footerHeight }}>
-        {renderElement(footerRenderer)}
+        {renderElement(footerRenderer)}`
       </div>
     );
   }
@@ -726,8 +756,8 @@ class BaseTable extends React.PureComponent {
       <div ref={this._setContainerRef} className={cls} style={containerStyle}>
         {this.renderFooter()}
         {this.renderMainTable()}
-        {this.renderLeftTable()}
-        {this.renderRightTable()}
+        {/*{this.renderLeftTable()}*/}
+        {/*{this.renderRightTable()}*/}
         {this.renderResizingLine()}
         {this.renderEmptyLayer()}
         {this.renderOverlay()}
@@ -1037,6 +1067,7 @@ BaseTable.defaultProps = {
   data: [],
   frozenData: [],
   fixed: false,
+  bordered: false,
   headerHeight: 50,
   rowHeight: 50,
   footerHeight: 0,
@@ -1125,6 +1156,10 @@ BaseTable.propTypes = {
    * Whether the width of the columns are fixed or flexible
    */
   fixed: PropTypes.bool,
+  /**
+   * Whether the table is bordered
+   */
+  bordered: PropTypes.bool,
   /**
    * Whether the table is disabled
    */

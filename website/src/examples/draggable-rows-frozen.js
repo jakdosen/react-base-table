@@ -8,7 +8,10 @@ const Handle = styled.div`
   flex: none;
   width: 7.5px;
   height: 100%;
-
+  position: sticky;
+  margin-left: -7.5px;
+  z-index: 4;
+  left: 0;
   &::before {
     content: '';
     border-left: 4px dotted #ccc;
@@ -22,22 +25,16 @@ const Handle = styled.div`
   }
 `
 
-const Row = ({ key, index, children, ...rest }) => {
-  // if the children's length is not equal the columns' length, then it's rendering row for frozen table
-  if (children.length !== 10)
-    return (
-      <DraggableElement key={key} index={index}>
-        <div {...rest}>
-          <DraggableHandle>
-            <Handle />
-          </DraggableHandle>
-          {children}
-        </div>
-      </DraggableElement>
-    )
-
-  return <div {...rest}>{children}</div>
-}
+const Row = ({ key, index, children, ...rest }) => (
+  <DraggableElement key={key} index={index}>
+    <div {...rest}>
+      <DraggableHandle>
+        <Handle />
+      </DraggableHandle>
+      {children}
+    </div>
+  </DraggableElement>
+)
 
 const rowProps = ({ rowIndex }) => ({
   tagName: Row,
@@ -52,16 +49,11 @@ class DraggableTable extends React.PureComponent {
   table = React.createRef()
 
   getContainer = () => {
-    // for fixed table with frozen columns, the drag handle is in the left frozen table
-    return this.table.current
-      .getDOMNode()
-      .querySelector('.BaseTable__table-frozen-left .BaseTable__body')
+    return this.table.current.getDOMNode().querySelector('.BaseTable__body')
   }
 
   getHelperContainer = () => {
-    return this.table.current
-      .getDOMNode()
-      .querySelector('.BaseTable__table-frozen-left')
+    return this.table.current.getDOMNode().querySelector('.BaseTable__table')
   }
 
   rowProps = args => {
@@ -108,14 +100,13 @@ const Hint = styled.div`
   margin-bottom: 10px;
 `
 
-const columns = generateColumns(10)
-const data = generateData(columns, 200)
+const columns = generateColumns(20)
+const data = generateData(columns, 200).map(col => ({ ...col, width: 150 }))
 columns[0].minWidth = 150
-columns[0].frozen = true
-
+columns[0].frozen = 'left'
 export default () => (
   <>
-    <Hint>Drag the dots, only works in fixed mode(fixed=true)</Hint>
-    <DraggableTable columns={columns} data={data} />
+    <Hint>Drag the dots, only works in flex mode(fixed=false)</Hint>
+    <DraggableTable fixed columns={columns} data={data} />
   </>
 )
