@@ -41,6 +41,7 @@ exports[`Table renders correctly 1`] = `
       >
         <div
           className="BaseTable__row"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -93,6 +94,7 @@ exports[`Table renders correctly 1`] = `
         </div>
         <div
           className="BaseTable__row"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -269,6 +271,7 @@ exports[`Table table can be set to disabled 1`] = `
       >
         <div
           className="BaseTable__row"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -321,6 +324,7 @@ exports[`Table table can be set to disabled 1`] = `
         </div>
         <div
           className="BaseTable__row"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -497,6 +501,7 @@ exports[`Table table can be set to fixed 1`] = `
       >
         <div
           className="BaseTable__row"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -549,6 +554,7 @@ exports[`Table table can be set to fixed 1`] = `
         </div>
         <div
           className="BaseTable__row"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -725,6 +731,7 @@ exports[`Table table can freeze rows 1`] = `
       >
         <div
           className="BaseTable__row"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -777,6 +784,7 @@ exports[`Table table can freeze rows 1`] = `
         </div>
         <div
           className="BaseTable__row"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -905,6 +913,7 @@ exports[`Table table can freeze rows 1`] = `
         </div>
         <div
           className="BaseTable__row BaseTable__row--frozen"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -954,6 +963,7 @@ exports[`Table table can freeze rows 1`] = `
         </div>
         <div
           className="BaseTable__row BaseTable__row--frozen"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -1051,6 +1061,7 @@ exports[`Table table can hide the header 1`] = `
       >
         <div
           className="BaseTable__row"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -1103,6 +1114,7 @@ exports[`Table table can hide the header 1`] = `
         </div>
         <div
           className="BaseTable__row"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -1203,6 +1215,7 @@ exports[`Table table can receive an emptyRenderer callback 1`] = `
       >
         <div
           className="BaseTable__row"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -1255,6 +1268,7 @@ exports[`Table table can receive an emptyRenderer callback 1`] = `
         </div>
         <div
           className="BaseTable__row"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -1431,6 +1445,7 @@ exports[`Table table can receive an headerRenderer callback 1`] = `
       >
         <div
           className="BaseTable__row"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -1483,6 +1498,7 @@ exports[`Table table can receive an headerRenderer callback 1`] = `
         </div>
         <div
           className="BaseTable__row"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -1616,6 +1632,7 @@ exports[`Table table can receive an rowRenderer callback 1`] = `
       >
         <div
           className="BaseTable__row BaseTable__row--customized"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -1629,6 +1646,7 @@ exports[`Table table can receive an rowRenderer callback 1`] = `
         />
         <div
           className="BaseTable__row BaseTable__row--customized"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -1766,6 +1784,7 @@ exports[`Table table can receive children 1`] = `
       >
         <div
           className="BaseTable__row"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -1818,6 +1837,7 @@ exports[`Table table can receive children 1`] = `
         </div>
         <div
           className="BaseTable__row"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -1994,6 +2014,7 @@ exports[`Table table can receive className 1`] = `
       >
         <div
           className="BaseTable__row"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -2046,6 +2067,7 @@ exports[`Table table can receive className 1`] = `
         </div>
         <div
           className="BaseTable__row"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -2222,6 +2244,7 @@ exports[`Table table can receive defaultExpandedRowKeys 1`] = `
       >
         <div
           className="BaseTable__row BaseTable__row--depth-0 BaseTable__row--expanded"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -2294,6 +2317,7 @@ exports[`Table table can receive defaultExpandedRowKeys 1`] = `
         </div>
         <div
           className="BaseTable__row BaseTable__row--depth-0"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -2642,6 +2666,7 @@ exports[`Table table can receive expandColumnKey 1`] = `
       >
         <div
           className="BaseTable__row BaseTable__row--depth-0"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -2714,6 +2739,7 @@ exports[`Table table can receive expandColumnKey 1`] = `
         </div>
         <div
           className="BaseTable__row BaseTable__row--depth-0"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -2930,6 +2956,7 @@ exports[`Table table can receive expandedRowKeys 1`] = `
       >
         <div
           className="BaseTable__row BaseTable__row--depth-0 BaseTable__row--expanded"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -3002,6 +3029,7 @@ exports[`Table table can receive expandedRowKeys 1`] = `
         </div>
         <div
           className="BaseTable__row BaseTable__row--depth-0"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -3218,6 +3246,7 @@ exports[`Table table can receive headerClassName 1`] = `
       >
         <div
           className="BaseTable__row"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -3270,6 +3299,7 @@ exports[`Table table can receive headerClassName 1`] = `
         </div>
         <div
           className="BaseTable__row"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -3446,6 +3476,7 @@ exports[`Table table can receive headerHeight 1`] = `
       >
         <div
           className="BaseTable__row"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -3498,6 +3529,7 @@ exports[`Table table can receive headerHeight 1`] = `
         </div>
         <div
           className="BaseTable__row"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -3674,6 +3706,7 @@ exports[`Table table can receive height 1`] = `
       >
         <div
           className="BaseTable__row"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -3726,6 +3759,7 @@ exports[`Table table can receive height 1`] = `
         </div>
         <div
           className="BaseTable__row"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -3902,6 +3936,7 @@ exports[`Table table can receive rowClassName 1`] = `
       >
         <div
           className="BaseTable__row custom-class"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -3954,6 +3989,7 @@ exports[`Table table can receive rowClassName 1`] = `
         </div>
         <div
           className="BaseTable__row custom-class"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -4130,6 +4166,7 @@ exports[`Table table can receive rowHeight 1`] = `
       >
         <div
           className="BaseTable__row"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -4182,6 +4219,7 @@ exports[`Table table can receive rowHeight 1`] = `
         </div>
         <div
           className="BaseTable__row"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -4359,6 +4397,7 @@ exports[`Table table can receive style 1`] = `
       >
         <div
           className="BaseTable__row"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -4411,6 +4450,7 @@ exports[`Table table can receive style 1`] = `
         </div>
         <div
           className="BaseTable__row"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -4587,6 +4627,7 @@ exports[`Table table can receive width 1`] = `
       >
         <div
           className="BaseTable__row"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -4639,6 +4680,7 @@ exports[`Table table can receive width 1`] = `
         </div>
         <div
           className="BaseTable__row"
+          data-row-key="2"
           role="row"
           style={
             Object {
@@ -4815,6 +4857,7 @@ exports[`Table table can specific a different rowKey 1`] = `
       >
         <div
           className="BaseTable__row"
+          data-row-key="1"
           role="row"
           style={
             Object {
@@ -4867,6 +4910,7 @@ exports[`Table table can specific a different rowKey 1`] = `
         </div>
         <div
           className="BaseTable__row"
+          data-row-key="2"
           role="row"
           style={
             Object {
