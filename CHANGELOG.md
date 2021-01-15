@@ -2,6 +2,13 @@
 
 ## NEXT VERSION
 
+## v1.13.0 (2021-01-15)
+
+- chore: Support proposal-optional-chaining and proposal-nullish-coalescing-operator
+- feat: Use 'position:sticky' to implement frozen columns of table
+- test: Update snapshot to adapt the feature
+- chore: Update demo code to adapt the feature
+
 ## v1.12.0 (2020-10-11)
 
 - feat: add the ability to pass function in `estimatedRowHeight` to determine the initial height of rows
